@@ -1,18 +1,31 @@
 students = [
     {"name": "Andrew", "group": "CS-55", "scores": [76, 65, 80, 90]},
     {"name": "Mary", "group": "MR-23", "scores": [60, 56, 66, 75]},
-    {"name": "Peter", "group": "CS-56", "scores": [72, 65, 76, 56]},
+    {"name": "Peter", "group": "CS-56", "scores": [76, 65, 76, 56]},
     {"name": "Robert", "group": "CS-55", "scores": [95, 92, 96, 91]},
-    {"name": "John", "group": "MR-23", "scores": []}
+    {"name": "John", "group": "MR-23", "scores": []},
+    {"name": "Mary", "group": "CS-56", "scores": [90, 89, 90, 76]}
 ]
 
 group = set()
+student_by_id = {}
 group_found = False
 id_check = ()
 
 for student_counter, student in enumerate(students, start=1):
+    if student_counter == 2:
+            continue
     student["id"] = (student["group"], student_counter)
     # ids = list(range(1, len(students) + 1))
+
+for student in students:
+    student_id = student.get("id")
+
+    if student_id is not None:
+        student_by_id[student_id] = student
+
+max_average = 0
+best_student = None
 
 print("\n___Average scores___\n")
 
@@ -21,9 +34,15 @@ for student in students:
     
     if student["scores"]:
         average_score = sum(student["scores"]) / len(student["scores"])
-        print(f"{student.get("name")}'s average score: ", average_score) 
+        print(f"{student.get("name")}'s average score: ", average_score)
+        if average_score > max_average:
+            max_average = average_score
+            best_student = student
     else:
         print(f"{student.get("name")} has no scores")
+
+if best_student:
+    print(f"\nBest result: {best_student["name"]} - {max_average}")
 
 print("\n___List copy___\n")
 
@@ -42,8 +61,12 @@ if group_check:
     print("\n___Students ID in this group___\n")
     for student in students:
         if student["group"] == group_entered:
-            print(student["id"])
-            group_found = True    
+            group_found = True
+            student_id = student.get("id")
+            if student_id is not None:
+                print(student["name"], student["id"])
+            else:
+                print(f"{student.get("name")} has no ID")   
 
     if not group_found:
         print("Group not found")
@@ -54,17 +77,11 @@ else:
 if group_found:
     id_entered = int(input("Enter student ID: "))
     id_check = (group_entered, id_entered)
-    for student in students:
-        if id_check == student["id"]:
-            print("\n___Student found___\n")
-            print(student["name"], student["id"])
-            break
+
+    student = student_by_id.get(id_check)
+
+    if student is not None:
+        print("\n___Student found___\n")
+        print(student["name"], student["id"])
     else:
         print("Student is not found")
-
-# for student in students:
-#     if student["id"] == id_entered:
-#         print(student["name"])
-#         break
-# else:
-#         print("Student not found")
